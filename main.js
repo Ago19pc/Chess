@@ -79,30 +79,30 @@ function mouseClicked(e, scacc){
     }
 }
   
-  function getPressedPiece(x, y){
-    for(let i = 0; i < 16; i++){
-      if ((blackTeam[i].x - sidedGap)/ cellSize == x && (blackTeam[i].y - sidedGap)/ cellSize == y){
-        ret = ['black', itoPiece(i), i];
-        return ret;
-      }
-      if ((whiteTeam[i].x - sidedGap)/ cellSize == x && (whiteTeam[i].y - sidedGap)/ cellSize == y){
-        ret = ['white', itoPiece(i), i];
-        return ret;
-      }
+function getPressedPiece(x, y){
+  for(let i = 0; i < 16; i++){
+    if ((blackTeam[i].x - sidedGap)/ cellSize == x && (blackTeam[i].y - sidedGap)/ cellSize == y){
+      ret = ['black', itoPiece(i), i];
+      return ret;
     }
-    return null;
+    if ((whiteTeam[i].x - sidedGap)/ cellSize == x && (whiteTeam[i].y - sidedGap)/ cellSize == y){
+      ret = ['white', itoPiece(i), i];
+      return ret;
+    }
   }
-  
-  function itoPiece(i){
-    // PEZZI 0,7 Torre 1,6 Cavallo 2,5 Alfiere 3Regina 4Re 8-15 Pedoni
-    if (i == 0 || i == 7) { return 'Torre'}
-    else if (i == 1 || i == 6) { return 'Cavallo'}
-    else if (i == 2 || i == 5) { return 'Alfiere'}
-    else if (i == 3) {return 'Regina'}
-    else if (i == 4) {return 'Re'}
-    else if (i > 7 && i < 16) {return 'Pedone'}
-    else {return 'ERRORE'}
-  }
+  return null;
+}
+
+function itoPiece(i){
+  // PEZZI 0,7 Torre 1,6 Cavallo 2,5 Alfiere 3Regina 4Re 8-15 Pedoni
+  if (i == 0 || i == 7) { return 'Torre'}
+  else if (i == 1 || i == 6) { return 'Cavallo'}
+  else if (i == 2 || i == 5) { return 'Alfiere'}
+  else if (i == 3) {return 'Regina'}
+  else if (i == 4) {return 'Re'}
+  else if (i > 7 && i < 16) {return 'Pedone'}
+  else {return 'ERRORE'}
+}
 
 window.onmousemove = e => hoverEvent(e, scacc);
 document.querySelector("#pieces").onclick = e => mouseClicked(e, scacc)
