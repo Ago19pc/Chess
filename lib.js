@@ -22,7 +22,15 @@ function hoverEvent(e, scacchiera){
     if (!areEqual(formerCell, cell) && cell.c !== "green") {
         cell.c = 'brown';
         if(formerCell) {
-            formerCell.c = formerCell.defaultColor
+            if (formerCell.getStatus() == 'hold' || formerCell.getStatus() == 'hover'){
+                formerCell.setStatus('hold');    
+                formerCell.c = formerCell.defaultColor
+            }
+        }
+    }
+    if (cell.c == 'green'){
+        if(formerCell && formerCell.c !== 'green'){
+            formerCell.c = formerCell.defaultColor;
         }
     }
 

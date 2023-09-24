@@ -4,23 +4,35 @@ const ctx = canvas.getContext("2d");
 const piecesCanvas = document.getElementById('pieces');
 const pCtx = piecesCanvas.getContext("2d");
 
+const coverCanvas = document.getElementById('overBoard');
+const cCtx = coverCanvas.getContext("2d");
+
 const scacc = new Scacchiera();
 scacc.setup();
+const cboard = new boardcover();
 
 let lastCellClicked = null;
+
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+sleep(60).then(_ => draw())
 
 function drawBoard() {
     // SCACCHIERA
     scacc.scacc.forEach(casella => {
         ctx.fillStyle = casella.c;
-        ctx.fillRect(casella.x, casella.y, 100, 100);
+        ctx.fillRect(casella.x, casella.y, cellSize, cellSize);
     });
 }
 
 function drawPieces() {
-    scacc.pieces.forEach(function (piece) {
-        piece.drawOnCanvas(pCtx);
-    })
+  pCtx.clearRect(0, 0, size, size);
+  scacc.pieces.forEach(function (piece) {
+    if (piece.alive == true) piece.drawOnCanvas(pCtx);
+  });
 }
 
 function draw() {
@@ -30,22 +42,39 @@ function draw() {
   
 function mouseClicked(e, scacc){
     const currentCell = scacc.getCell(e.clientX, e.clientY);
+    const currentClikedPiece = scacc.getPieceByCell(currentCell);
     if (lastCellClicked == null){
-      lastCellClicked = currentCell;
-      currentCell.c = 'green';
-      drawBoard()
-      return;
+      if (currentClikedPiece){
+        cboard.calculateTrajectory(currentClikedPiece);
+        lastCellClicked = currentCell;
+        currentCell.c = 'green';
+        currentCell.setStatus('clicked');
+        drawBoard()
+        return;
+      } else return;
     }
     newCellClicked = scacc.getCell(e.clientX, e.clientY);
     if (areEqual(newCellClicked, lastCellClicked)) {
       // CLICCATO 2 VOLTE SULLO STESSO ELEMENTO
-      newCellClicked.c = currentCell.defaultColor;
+      newCellClicked.setStatus('hover');
+      newCellClicked.c = 'brown';
+      cboard.coverClear();
       lastCellClicked = null;
       newCellClicked = null;
       drawBoard()
       return;
     } else {
       // TODO: caso clicco su un altra cella
+      //console.log(scacc.getPieceByCell(lastCellClicked));
+      if (scacc.getPieceByCell(lastCellClicked) != null){
+        scacc.getPieceByCell(lastCellClicked).move(newCellClicked)
+        cboard.coverClear();
+        lastCellClicked.setStatus('hold');
+        lastCellClicked.c = lastCellClicked.defaultColor;
+        lastCellClicked = null;
+        newCellClicked = null;
+        //console.log(lastCellClicked, scacc.getPieceByCell(lastCellClicked));
+      }
       drawBoard();
     }
 }
@@ -76,6 +105,4 @@ function mouseClicked(e, scacc){
   }
 
 window.onmousemove = e => hoverEvent(e, scacc);
-window.onclick = e => mouseClicked(e, scacc)
-
-draw();
+document.querySelector("#pieces").onclick = e => mouseClicked(e, scacc)
