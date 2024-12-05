@@ -150,6 +150,7 @@ class Scacchiera {
                 this.pieces[i].y = 7;
                 this.pieces[i].x = i - 24;
             }
+            this.pieces[i].arrocco = true;
         }
         drawPieces();
 
